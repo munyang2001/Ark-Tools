@@ -38,10 +38,26 @@ namespace Ark_Tools
         public MainWindow()
         {
             InitializeComponent();
+            LoadJsonData();
             LoadData();
         }
 
-        public async Task LoadData()
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveData();
+        }
+
+        public void SaveData()
+        {
+
+        }
+
+        public void LoadData()
+        {
+
+        }
+
+        public async Task LoadJsonData()
         {
             string url = "https://cdn2.arkdedicated.com/servers/asa/officialserverlist.json";
             try
@@ -89,26 +105,26 @@ namespace Ark_Tools
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Debug.WriteLine("CLICKED");
-        }
+
         public void FilterServersAndShowListBox()
         {
             var RegionComboboxVal = RegionCombobox.SelectedItem;
             var TypeComboboxVal = TypeCombobox.SelectedItem;
             var MapComboboxVal = MapCombobox.SelectedItem;
-            ListBoxItems.Items.Clear();
+            FilterListBoxItems.Items.Clear();
 
             var filteredServers = this.ServersFiltered.Where(server =>
             (RegionComboboxVal == null || server.Name.Split('-')[0] == RegionComboboxVal.ToString()) &&
             (TypeComboboxVal == null || server.ClusterID == TypeComboboxVal.ToString()) &&
-            (MapComboboxVal == null || server.MapName == MapComboboxVal.ToString())
+            (MapComboboxVal == null || server.MapName == MapComboboxVal.ToString()) &&
+            (SearchTextBox == null || server.Name.Contains(SearchTextBox.Text))
                 ).ToList();
+
+            //var sortedServers = ListB
 
             foreach (var server in filteredServers)
             {
-                ListBoxItems.Items.Add(server.Name);
+                FilterListBoxItems.Items.Add(server.Name);
             }
             return;
         }
@@ -124,6 +140,72 @@ namespace Ark_Tools
         }
 
         private void MapCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterServersAndShowListBox();
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedServer = FilterListBoxItems.SelectedItem;
+            if (selectedServer != null)
+            {   
+                if (!SaveLoadListBoxItems.Items.Contains(selectedServer))
+                    SaveLoadListBoxItems.Items.Add(selectedServer);
+                else
+                {
+                    MessageBox.Show("Server already saved");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select a server from Server Filter list to save");
+            }
+        }
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            RegionCombobox.SelectedIndex = -1;
+            TypeCombobox.SelectedIndex = -1;
+            MapCombobox.SelectedIndex = -1;
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedServer = SaveLoadListBoxItems.SelectedItem;
+            if (selectedServer != null) 
+            { 
+                SaveLoadListBoxItems.Items.Remove(selectedServer);
+            }
+            else
+            {
+                MessageBox.Show("Select a server to delete from saved list");
+            }
+
+        }
+
+        private void SaveLoadListBoxItems_GotFocus(object sender, RoutedEventArgs e)
+        {
+            FilterListBoxItems.UnselectAll();
+        }
+        private void FilterListBoxItems_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SaveLoadListBoxItems.UnselectAll();
+        }
+
+        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Foreground = Brushes.Black;
+        }
+        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Foreground = Brushes.Gray;
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             FilterServersAndShowListBox();
         }
