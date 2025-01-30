@@ -16,16 +16,14 @@
         <TabControl Grid.Column="1">
             <TabItem Header="Login Sim">
                 <Grid Background="#FFE5E5E5">
-                    <ComboBox Name="RegionCombobox" HorizontalAlignment="Left" Margin="100,25,0,0" VerticalAlignment="Top" Width="120"/>
-                    <ComboBox Name="TypeCombobox" HorizontalAlignment="Left" Margin="100,50,0,0" VerticalAlignment="Top" Width="120"/>
-                    <ComboBox Name="MapCombobox" HorizontalAlignment="Left" Margin="100,75,0,0" VerticalAlignment="Top" Width="120"/>
-                    <ComboBox Name="ServerIDCombobox" HorizontalAlignment="Left" Margin="100,100,0,0" VerticalAlignment="Top" Width="120" IsEditable="True"/>
+                    <ComboBox Name="RegionCombobox" HorizontalAlignment="Left" Margin="100,25,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="RegionCombobox_SelectionChanged"/>
+                    <ComboBox Name="TypeCombobox" HorizontalAlignment="Left" Margin="100,50,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="TypeCombobox_SelectionChanged"/>
+                    <ComboBox Name="MapCombobox" HorizontalAlignment="Left" Margin="100,75,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="MapCombobox_SelectionChanged"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,25,0,0" TextWrapping="Wrap" Text="Region" VerticalAlignment="Top" Width="46" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,50,0,0" TextWrapping="Wrap" Text="PVE/PVP" VerticalAlignment="Top" Width="60" IsReadOnly="True" BorderBrush="#FFE5E5E5" Background="#FFE5E5E5"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,75,0,0" TextWrapping="Wrap" Text="Map" VerticalAlignment="Top" Width="30" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5"/>
-                    <TextBox HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap" Text="Server Number" VerticalAlignment="Top" Width="88" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5"/>
-                    <Button Content="Start" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" Height="50" Width="210" Click="Button_Click"/>
-                    <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" Margin="10,200,574,10"/>
+                    <Button Content="Start" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Height="50" Width="210" Click="Button_Click"/>
+                    <ListBox Name="ListBoxItems" Margin="10,200,574,10"/>
                     <Image Source="Assets/placeholderimage.jpg" HorizontalAlignment="Left" Height="364" Margin="275,25,0,0" VerticalAlignment="Top" Width="473"/>
                 </Grid>
             </TabItem>

@@ -26,7 +26,7 @@ namespace Ark_Tools
 
     class Server
     {
-        public string Name {  get; set; }
+        public string Name { get; set; }
         public string MapName { get; set; }
         public string ClusterID { get; set; }
 
@@ -48,7 +48,7 @@ namespace Ark_Tools
             {
                 using HttpClient client = new HttpClient();
                 List<Server> jsonData = await client.GetFromJsonAsync<List<Server>>(url);
-                string[] excludeServers = { "Modded", "Expire", "Club", "SOTF", "Console", "QA", "Arkpocalypse", "Conquest", "Isolated" };
+                string[] excludeServers = { "Modded", "Expire", "Club", "SOTF", "Console", "QA", "Arkpocalypse", "Conquest", "Isolated", "Dev" };
                 if (jsonData != null)
                 {
                     foreach (var server in jsonData)
@@ -79,8 +79,8 @@ namespace Ark_Tools
                     {
                         MapCombobox.Items.Add(server.MapName);
                     }
-                    ServerIDCombobox.Items.Add(int.Parse(serverID));
                 }
+                FilterServersAndShowListBox();
                 System.Diagnostics.Debug.WriteLine($"skib { jsonData}");
             }
             catch (Exception ex)
@@ -93,6 +93,39 @@ namespace Ark_Tools
         {
             Debug.WriteLine("CLICKED");
         }
+        public void FilterServersAndShowListBox()
+        {
+            var RegionComboboxVal = RegionCombobox.SelectedItem;
+            var TypeComboboxVal = TypeCombobox.SelectedItem;
+            var MapComboboxVal = MapCombobox.SelectedItem;
+            ListBoxItems.Items.Clear();
 
+            var filteredServers = this.ServersFiltered.Where(server =>
+            (RegionComboboxVal == null || server.Name.Split('-')[0] == RegionComboboxVal.ToString()) &&
+            (TypeComboboxVal == null || server.ClusterID == TypeComboboxVal.ToString()) &&
+            (MapComboboxVal == null || server.MapName == MapComboboxVal.ToString())
+                ).ToList();
+
+            foreach (var server in filteredServers)
+            {
+                ListBoxItems.Items.Add(server.Name);
+            }
+            return;
+        }
+
+        private void RegionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterServersAndShowListBox();
+        }
+
+        private void TypeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterServersAndShowListBox();
+        }
+
+        private void MapCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterServersAndShowListBox();
+        }
     }
 }
