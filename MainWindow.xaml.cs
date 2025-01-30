@@ -11,10 +11,11 @@ using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
+using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Ark_Tools
 {
@@ -22,42 +23,65 @@ namespace Ark_Tools
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
+
+    class Server
+    {
+        public string Name {  get; set; }
+        public string MapName { get; set; }
+        public string ClusterID { get; set; }
+
+    }
+
     public partial class MainWindow : Window
     {
-        public Array EUServers { get; set; }
-        public Array NAServers { get; set; }
-        public Array ASIAServers { get; set; }
-        public Array OCServers { get; set; }
-
+        private List<Server> ServersFiltered = new List<Server>();
         public MainWindow()
         {
             InitializeComponent();
-            FetchAndStoreData();
+            LoadData();
         }
 
-        public async Task FetchAndStoreData()
+        public async Task LoadData()
         {
             string url = "https://cdn2.arkdedicated.com/servers/asa/officialserverlist.json";
-            string rootPath = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = System.IO.Path.Combine(rootPath, "servers.json");
-
             try
             {
                 using HttpClient client = new HttpClient();
-                var jsonData = await client.GetFromJsonAsync<object>(url);
-
+                List<Server> jsonData = await client.GetFromJsonAsync<List<Server>>(url);
+                string[] excludeServers = { "Modded", "Expire", "Club", "SOTF", "Console", "QA", "Arkpocalypse", "Conquest", "Isolated" };
                 if (jsonData != null)
                 {
-                    string jsonString = JsonSerializer.Serialize(jsonData, new JsonSerializerOptions { WriteIndented = true });
-                    
-                    await System.IO.File.WriteAllTextAsync(filePath, jsonString);
-                    MessageBox.Show($"Data saved to {filePath}");
+                    foreach (var server in jsonData)
+                    {
+                        if (!excludeServers.Any(excludeWord => server.Name.Contains(excludeWord)))
+                        {
+                            this.ServersFiltered.Add(server);
+                        }
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("No data received.");
-                }    
 
+                foreach (var server in this.ServersFiltered)
+                {
+
+                    System.Diagnostics.Debug.WriteLine($"Name: {server.Name}, MapName: {server.MapName}, ClusterID: {server.ClusterID}");
+                    
+                    string region = server.Name.Split('-')[0];
+                    string serverID = server.Name.Length >= 4 ? server.Name[^4..] : server.Name;
+                    if (!RegionCombobox.Items.Contains(region))
+                    {
+                        RegionCombobox.Items.Add(region);
+                    }
+                    if (!TypeCombobox.Items.Contains(server.ClusterID))
+                    {
+                        TypeCombobox.Items.Add(server.ClusterID);
+                    }
+                    if (!MapCombobox.Items.Contains(server.MapName))
+                    {
+                        MapCombobox.Items.Add(server.MapName);
+                    }
+                    ServerIDCombobox.Items.Add(int.Parse(serverID));
+                }
+                System.Diagnostics.Debug.WriteLine($"skib { jsonData}");
             }
             catch (Exception ex)
             {
@@ -67,7 +91,8 @@ namespace Ark_Tools
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            Debug.WriteLine("CLICKED");
         }
+
     }
 }

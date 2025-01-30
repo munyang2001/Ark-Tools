@@ -19,7 +19,7 @@
                     <ComboBox Name="RegionCombobox" HorizontalAlignment="Left" Margin="100,25,0,0" VerticalAlignment="Top" Width="120"/>
                     <ComboBox Name="TypeCombobox" HorizontalAlignment="Left" Margin="100,50,0,0" VerticalAlignment="Top" Width="120"/>
                     <ComboBox Name="MapCombobox" HorizontalAlignment="Left" Margin="100,75,0,0" VerticalAlignment="Top" Width="120"/>
-                    <ComboBox Name="ServerNumberCombobox" HorizontalAlignment="Left" Margin="100,100,0,0" VerticalAlignment="Top" Width="120" IsEditable="True"/>
+                    <ComboBox Name="ServerIDCombobox" HorizontalAlignment="Left" Margin="100,100,0,0" VerticalAlignment="Top" Width="120" IsEditable="True"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,25,0,0" TextWrapping="Wrap" Text="Region" VerticalAlignment="Top" Width="46" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,50,0,0" TextWrapping="Wrap" Text="PVE/PVP" VerticalAlignment="Top" Width="60" IsReadOnly="True" BorderBrush="#FFE5E5E5" Background="#FFE5E5E5"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,75,0,0" TextWrapping="Wrap" Text="Map" VerticalAlignment="Top" Width="30" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5"/>
