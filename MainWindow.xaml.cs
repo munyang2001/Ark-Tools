@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.IO;
 
 namespace Ark_Tools
 {
@@ -26,20 +27,25 @@ namespace Ark_Tools
 
     class Server
     {
-        public string Name { get; set; }
-        public string MapName { get; set; }
-        public string ClusterID { get; set; }
+        public required string Name { get; set; }
+        public required string MapName { get; set; }
+        public required string ClusterID { get; set; }
 
     }
 
     public partial class MainWindow : Window
     {
         private List<Server> ServersFiltered = new List<Server>();
+
         public MainWindow()
         {
             InitializeComponent();
-            LoadJsonData();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             LoadData();
+            await LoadJsonData();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -49,12 +55,36 @@ namespace Ark_Tools
 
         public void SaveData()
         {
+            using (StreamWriter writer = new StreamWriter("savedServers.txt", false))
+            {
+                if (SaveLoadListBoxItems.Items.Count > 0)
+                {
+                    foreach (var server in SaveLoadListBoxItems.Items)
+                    {
+                        writer.WriteLine(server);
+                    }
+                }
+                else
+                {
+                    writer.WriteLine(String.Empty);
+                }
+            }
 
         }
 
         public void LoadData()
         {
-
+            if (System.IO.File.Exists("savedServers.txt"))
+            {
+                string[] lines = System.IO.File.ReadAllLines("savedServers.txt");
+                foreach (string line in lines)
+                {
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        SaveLoadListBoxItems.Items.Add(line);
+                    }
+                }
+            }
         }
 
         public async Task LoadJsonData()
@@ -63,48 +93,55 @@ namespace Ark_Tools
             try
             {
                 using HttpClient client = new HttpClient();
-                List<Server> jsonData = await client.GetFromJsonAsync<List<Server>>(url);
-                string[] excludeServers = { "Modded", "Expire", "Club", "SOTF", "Console", "QA", "Arkpocalypse", "Conquest", "Isolated", "Dev" };
-                if (jsonData != null)
-                {
-                    foreach (var server in jsonData)
+                HttpResponseMessage response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                { 
+                    List<Server>? jsonData = await client.GetFromJsonAsync<List<Server>>(url);
+                    string[] excludeServers = { "Modded", "Expire", "Club", "SOTF", "Console", "QA", "Arkpocalypse", "Conquest", "Isolated", "Dev" };
+                    if (jsonData != null)
                     {
-                        if (!excludeServers.Any(excludeWord => server.Name.Contains(excludeWord)))
+                        foreach (var server in jsonData)
                         {
-                            this.ServersFiltered.Add(server);
+                            if (!excludeServers.Any(excludeWord => server.Name.Contains(excludeWord)))
+                            {
+                                this.ServersFiltered.Add(server);
+                            }
                         }
                     }
-                }
 
-                foreach (var server in this.ServersFiltered)
-                {
-
-                    System.Diagnostics.Debug.WriteLine($"Name: {server.Name}, MapName: {server.MapName}, ClusterID: {server.ClusterID}");
-                    
-                    string region = server.Name.Split('-')[0];
-                    string serverID = server.Name.Length >= 4 ? server.Name[^4..] : server.Name;
-                    if (!RegionCombobox.Items.Contains(region))
+                    foreach (var server in this.ServersFiltered)
                     {
-                        RegionCombobox.Items.Add(region);
+                        string region = server.Name.Split('-')[0];
+                        string serverID = server.Name.Length >= 4 ? server.Name[^4..] : server.Name;
+                        if (!RegionCombobox.Items.Contains(region))
+                        {
+                            RegionCombobox.Items.Add(region);
+                        }
+                        if (!TypeCombobox.Items.Contains(server.ClusterID))
+                        {
+                            TypeCombobox.Items.Add(server.ClusterID);
+                        }
+                        if (!MapCombobox.Items.Contains(server.MapName))
+                        {
+                            MapCombobox.Items.Add(server.MapName);
+                        }
                     }
-                    if (!TypeCombobox.Items.Contains(server.ClusterID))
-                    {
-                        TypeCombobox.Items.Add(server.ClusterID);
-                    }
-                    if (!MapCombobox.Items.Contains(server.MapName))
-                    {
-                        MapCombobox.Items.Add(server.MapName);
-                    }
+                    FilterServersAndShowListBox();
                 }
-                FilterServersAndShowListBox();
-                System.Diagnostics.Debug.WriteLine($"skib { jsonData}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                MessageBox.Show($"Request timed out {ex.Message}");
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Network error: {ex.Message}");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
 
         public void FilterServersAndShowListBox()
         {
@@ -119,8 +156,6 @@ namespace Ark_Tools
             (MapComboboxVal == null || server.MapName == MapComboboxVal.ToString()) &&
             (SearchTextBox == null || server.Name.Contains(SearchTextBox.Text))
                 ).ToList();
-
-            //var sortedServers = ListB
 
             foreach (var server in filteredServers)
             {
