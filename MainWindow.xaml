@@ -5,16 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ark_Tools"
         mc:Ignorable="d"
-        Title="Ark Tools" Height="450" Width="800"
+        Title="Ark Tools" Height="Auto" Width="Auto"
         Icon="Assets/AppLogo.ico"
         ResizeMode="CanMinimize"
         Closing="Window_Closing"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="800"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="450"/>
+        </Grid.RowDefinitions>
         <TabControl Grid.Column="1">
             <TabItem Header="Login Sim">
                 <Grid Background="#FFE5E5E5">
@@ -26,11 +29,9 @@
                     <TextBox HorizontalAlignment="Left" Margin="10,50,0,0" TextWrapping="Wrap" Text="PVE/PVP" VerticalAlignment="Top" Width="60" IsReadOnly="True" BorderBrush="#FFE5E5E5" Background="#FFE5E5E5"/>
                     <TextBox HorizontalAlignment="Left" Margin="10,75,0,0" TextWrapping="Wrap" Text="Map" VerticalAlignment="Top" Width="30" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5"/>
 
-                    <Button Name="StartButton" Content="Start Sim" HorizontalAlignment="Left" Margin="150,105,0,0" VerticalAlignment="Top" Height="45" Width="70" Click="StartButton_Click"/>
-                    <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="80,125,0,0" VerticalAlignment="Top" Height="25" Width="60" Click="SaveButton_Click"/>
-                    <Button Name="Clear" Content="Clear" HorizontalAlignment="Left" Margin="80,100,0,0" VerticalAlignment="Top" Height="25" Width="60" Click="ClearButton_Click"/>
+                    <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="160,125,0,0" VerticalAlignment="Top" Height="25" Width="60" Click="SaveButton_Click"/>
+                    <Button Name="Clear" Content="Clear" HorizontalAlignment="Left" Margin="85,126,0,0" VerticalAlignment="Top" Height="24" Width="60" Click="ClearButton_Click"/>
                     <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" Height="25" Width="60" Click="DeleteButton_Click"/>
-
 
                     <ListBox Name="SaveLoadListBoxItems" Margin="10,150,574,10" GotFocus="SaveLoadListBoxItems_GotFocus"/>
 
@@ -38,10 +39,10 @@
                     <TextBox Name="SearchTextBox" Foreground="Gray" HorizontalAlignment="Left" Margin="327,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus" TextChanged="SearchTextBox_TextChanged"/>
                     <ListBox Name="FilterListBoxItems" Margin="250,25,347,10" GotFocus="FilterListBoxItems_GotFocus"/>
 
-                    <Image Source="Assets/placeholderimage.jpg" HorizontalAlignment="Left" Height="364" Margin="463,25,0,0" VerticalAlignment="Top" Width="285"/>
-
-
-
+                    <Image Source="Assets/placeholderimage.jpg" HorizontalAlignment="Left" Height="313" Margin="463,25,0,0" VerticalAlignment="Top" Width="285"/>
+                    <Button Name="StartButton" Content="Start Sim" HorizontalAlignment="Left" Margin="684,362,0,0" VerticalAlignment="Top" Height="50" Width="100" Click="StartButton_Click" Background="#FF95E8B8"/>
+                    <Button Name="StopSim" Content="Stop Sim" HorizontalAlignment="Left" Margin="570,362,0,0" VerticalAlignment="Top" Height="50" Width="100" Click="StopSim_Click" Background="#FFF19B9B"/>
+                    <TextBox Name="UIFeedback" HorizontalAlignment="Left" Margin="463,339,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="321" IsReadOnly="True" Background="#FFE5E5E5" BorderBrush="#FFE5E5E5" TextAlignment="Right" FontSize="16"/>
 
                 </Grid>
             </TabItem>

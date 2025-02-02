@@ -36,6 +36,7 @@ namespace Ark_Tools
     public partial class MainWindow : Window
     {
         private List<Server> ServersFiltered = new List<Server>();
+        private CancellationTokenSource cts = new CancellationTokenSource();
 
         public MainWindow()
         {
@@ -179,9 +180,60 @@ namespace Ark_Tools
             FilterServersAndShowListBox();
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            string serverSelected = null;
+
+            if (SaveLoadListBoxItems.SelectedItem != null)
+            {
+                serverSelected = SaveLoadListBoxItems.SelectedItem.ToString();
+            }
+            else if (FilterListBoxItems.SelectedItem != null)
+            {
+                serverSelected= FilterListBoxItems.SelectedItem.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Select a server to start sim either from saves or filterbox");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show(
+                $"START SIM: {serverSelected}?", 
+                "Confirm Selection", 
+                MessageBoxButton.YesNo, 
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes) 
+            {
+
+                StartButton.IsEnabled = false;
+
+                cts.Cancel();
+                cts = new CancellationTokenSource();
+                UIFeedback.Text = ($"Running sim {serverSelected}");
+
+                await Task.Run(() => LoginSim(serverSelected, cts.Token));
+
+                StartButton.IsEnabled = true;
+                UIFeedback.Text = ($"Stopped Sim");
+            }
+        }
+
+        private void LoginSim(string server, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void StopSim_Click(object sender, RoutedEventArgs e)
+        {
+            cts.Cancel();
+            Debug.WriteLine("User clicked Stop Sim");
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
